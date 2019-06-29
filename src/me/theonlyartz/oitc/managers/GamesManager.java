@@ -1,6 +1,7 @@
 package me.theonlyartz.oitc.managers;
 
 import me.theonlyartz.oitc.Main;
+import me.theonlyartz.oitc.enums.State;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,6 +22,33 @@ public class GamesManager {
         Location one = new Location(Bukkit.getWorld("world"), -10.5, 80, 32.5);
         Location two = new Location(Bukkit.getWorld("world"), -8.5, 80, -20.5);
         availableCords.add(new ArrayList<Location>(Arrays.asList(one, two)));
+    }
+
+    public GameInstanceManager createGame() {
+        GameInstanceManager newGame = new GameInstanceManager(this.plugin);
+        HashMap<String, Location> locations = reserveCords();
+
+        newGame.teamA.setSpawnPoint(locations.get("A"));
+        newGame.teamB.setSpawnPoint(locations.get("B"));
+
+        runningGames.add(newGame);
+        return newGame;
+    }
+
+    public void tryToStartGame(GameInstanceManager game) {
+        if (!game.isReady()) return;
+
+        game.teamA.spawn();
+        game.teamB.spawn();
+        game.state = State.STARTED;
+    }
+
+    public boolean areThereAvailableCords() {
+        return this.availableCords.size() != 0;
+    }
+
+    public boolean areThereRunningGames() {
+        return this.runningGames.size() != 0;
     }
 
     public HashMap<String, Location> reserveCords() {
