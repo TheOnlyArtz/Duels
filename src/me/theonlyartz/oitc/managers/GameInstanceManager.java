@@ -13,8 +13,8 @@ public class GameInstanceManager {
     public State state;
 
     public GameInstanceManager(Main p) {
-        this.teamA = new Team(p);
-        this.teamB = new Team(p);
+        this.teamA = new Team(p, "A");
+        this.teamB = new Team(p, "B");
         this.plugin = p;
         this.state = State.WAITING;
     }
