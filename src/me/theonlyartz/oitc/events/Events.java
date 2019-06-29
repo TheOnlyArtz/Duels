@@ -3,20 +3,18 @@ package me.theonlyartz.oitc.events;
 import me.theonlyartz.oitc.Main;
 import me.theonlyartz.oitc.enums.State;
 import me.theonlyartz.oitc.managers.GameInstanceManager;
+import me.theonlyartz.oitc.models.Team;
 import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Events implements Listener {
@@ -33,7 +31,6 @@ public class Events implements Listener {
         if (game == null) return;
 
         if (!(player.getKiller() instanceof Player)) {
-            game.getPlayerTeam(player).respawnPlayer(player);
             String msg = String.format("&O&B%s&r &3just died by some unknown shit!", player.getName());
             game.teamB.broadcast(msg);
             game.teamA.broadcast(msg);
@@ -43,10 +40,26 @@ public class Events implements Listener {
 
         Player killer = player.getKiller();
         killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
+        killer.setHealth(20.0);
         String msg = String.format("&O&B%s&r &3has been killed by&r &L&6%s", player.getName(), killer.getName());
         game.teamB.broadcast(msg);
         game.teamA.broadcast(msg);
-        game.getPlayerTeam(player).respawnPlayer(player);
+
+    }
+
+    @EventHandler
+    public void playerRespawnEvent(PlayerRespawnEvent e) {
+        GameInstanceManager game = this.plugin.gamesManager.lookUpPlayer(e.getPlayer().getName());
+        Team team = game.getPlayerTeam(e.getPlayer());
+        if (game != null) {
+            this.plugin.gamesManager.applyOITCKit(e.getPlayer());
+
+            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
+                public void run() {
+                    game.getPlayerTeam(e.getPlayer()).respawnPlayer(e.getPlayer());
+                }
+            }, 2L);
+        }
     }
 
     @EventHandler
@@ -75,6 +88,17 @@ public class Events implements Listener {
                 }
             }
         }
+    }
+
+//    @EventHandler
+//    public void onItemSpawn(ItemSpawnEvent e)
+//    {
+//        e.setCancelled(true);
+//    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        e.setCancelled(true);
     }
 
     @EventHandler
