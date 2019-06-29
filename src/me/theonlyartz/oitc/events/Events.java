@@ -40,8 +40,10 @@ public class Events implements Listener {
 
         Player killer = player.getKiller();
         killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
-        killer.setHealth(20.0);
-        String msg = String.format("&O&B%s&r &3has been killed by&r &L&6%s", player.getName(), killer.getName());
+
+        if (!killer.isDead()) killer.setHealth(20.0);
+        game.getPlayerTeam(killer).incrementScore();
+        String msg = String.format("&O&B%s&r &3has been killed by&r &L&6%s\nSCORE: &2%d : &9%d", player.getName(), killer.getName(), game.teamA.score, game.teamB.score);
         game.teamB.broadcast(msg);
         game.teamA.broadcast(msg);
 
@@ -49,16 +51,20 @@ public class Events implements Listener {
 
     @EventHandler
     public void playerRespawnEvent(PlayerRespawnEvent e) {
-        GameInstanceManager game = this.plugin.gamesManager.lookUpPlayer(e.getPlayer().getName());
-        Team team = game.getPlayerTeam(e.getPlayer());
-        if (game != null) {
-            this.plugin.gamesManager.applyOITCKit(e.getPlayer());
+        try {
+            GameInstanceManager game = this.plugin.gamesManager.lookUpPlayer(e.getPlayer().getName());
+            Team team = game.getPlayerTeam(e.getPlayer());
+            if (game != null) {
+                this.plugin.gamesManager.applyOITCKit(e.getPlayer());
 
-            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
-                public void run() {
-                    game.getPlayerTeam(e.getPlayer()).respawnPlayer(e.getPlayer());
-                }
-            }, 2L);
+                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
+                    public void run() {
+                        game.getPlayerTeam(e.getPlayer()).respawnPlayer(e.getPlayer());
+                    }
+                }, 2L);
+            }
+        } catch (Exception er) {
+            er.printStackTrace();
         }
     }
 
@@ -90,11 +96,16 @@ public class Events implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void onItemSpawn(ItemSpawnEvent e)
-//    {
-//        e.setCancelled(true);
-//    }
+    @EventHandler
+    public void onHit(ProjectileHitEvent e) //called when a projectile hits an object.
+    {
+        Projectile p = e.getEntity(); // get the projectile for the event;
+        if (p instanceof Arrow) // check if it's an arrow
+        {
+            p.remove(); //remove the arrow from the ground.
+        }
+        return;
+    }
 
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
