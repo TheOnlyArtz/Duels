@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class Team {
     public ArrayList<Player> players;
     public Location spawnPoint;
+    public int score = 0;
+
     private Main plugin;
 
     public Team(Main p) {
@@ -45,5 +47,9 @@ public class Team {
         for (Player p : this.players) {
             p.sendMessage(msg);
         }
+    }
+
+    public void respawnPlayer(Player p) {
+        p.teleport(spawnPoint);
     }
 }

@@ -34,4 +34,16 @@ public class GameInstanceManager {
 
         return teamA;
     }
+
+    public Team getPlayerTeam(Player player) {
+        for (Player p : teamA.getPlayers()) {
+            if (p.getName().equals(player.getName())) return teamA;
+        }
+
+        for (Player p : teamB.getPlayers()) {
+            if (p.getName().equals(player.getName())) return teamB;
+        }
+
+        return null;
+    }
 }
