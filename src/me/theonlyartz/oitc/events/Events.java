@@ -1,8 +1,10 @@
 package me.theonlyartz.oitc.events;
 
 import me.theonlyartz.oitc.Main;
+import me.theonlyartz.oitc.enums.State;
 import me.theonlyartz.oitc.managers.GameInstanceManager;
 import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -14,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Events implements Listener {
@@ -70,6 +73,20 @@ public class Events implements Listener {
                     }
                     e.setDamage(1000);
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String msg = event.getMessage();
+        String cmd = msg.split("\\s+")[0].replace('/', Character.MIN_VALUE).substring(1);
+        GameInstanceManager game = this.plugin.gamesManager.lookUpPlayer(player.getName());
+        if (game != null && game.getState().equals(State.STARTED)) {
+            if (plugin.getCommand(cmd) == null) {
+                event.setCancelled(true);
+                Main.sendMessage(player, "&CYou can't execute external commands in a duel!");
             }
         }
     }
