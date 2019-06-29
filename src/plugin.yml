@@ -2,6 +2,8 @@ name: OneInTheChamber
 version: 0.0.1
 author: TheOnlyArtz
 main: me.theonlyartz.oitc.Main
+description: sike
 
-#commands:
-#
+commands:
+  oitc:
+    description: The one and only command
