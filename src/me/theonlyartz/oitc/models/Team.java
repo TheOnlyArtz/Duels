@@ -1,8 +1,10 @@
 package me.theonlyartz.oitc.models;
 
 import me.theonlyartz.oitc.Main;
+import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class Team {
     }
 
     public void respawnPlayer(Player p) {
+        ((CraftPlayer) p).getHandle().playerConnection.a(new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN));
         p.teleport(spawnPoint);
     }
 }
