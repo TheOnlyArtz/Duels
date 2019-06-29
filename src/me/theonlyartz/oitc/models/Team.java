@@ -62,4 +62,8 @@ public class Team {
         p.setGameMode(GameMode.ADVENTURE);
         p.teleport(this.spawnPoint);
     }
+
+    public void incrementScore() {
+        this.score++;
+    }
 }
