@@ -1,6 +1,7 @@
 package me.theonlyartz.oitc.models;
 
 import me.theonlyartz.oitc.Main;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -14,6 +15,8 @@ public class Team {
     private Main plugin;
 
     public Team(Main p) {
+        this.players = new ArrayList<Player>();
+        this.spawnPoint = null;
         this.plugin = p;
     }
 
@@ -28,6 +31,7 @@ public class Team {
     public void spawn() {
         for (Player p : this.players) {
             p.teleport(this.spawnPoint);
+            p.setGameMode(GameMode.ADVENTURE);
         }
     }
 
@@ -45,7 +49,7 @@ public class Team {
 
     public void broadcast(String msg) {
         for (Player p : this.players) {
-            p.sendMessage(msg);
+            Main.sendMessage(p, msg);
         }
     }
 
