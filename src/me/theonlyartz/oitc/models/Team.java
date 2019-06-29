@@ -13,13 +13,15 @@ public class Team {
     public ArrayList<Player> players;
     public Location spawnPoint;
     public int score = 0;
+    public String key;
 
     private Main plugin;
 
-    public Team(Main p) {
+    public Team(Main p, String key) {
         this.players = new ArrayList<Player>();
         this.spawnPoint = null;
         this.plugin = p;
+        this.key = key;
     }
 
     public void addPlayer(Player p) {
@@ -34,6 +36,7 @@ public class Team {
         for (Player p : this.players) {
             p.teleport(this.spawnPoint);
             p.setGameMode(GameMode.ADVENTURE);
+            plugin.gamesManager.applyOITCKit(p);
         }
     }
 
@@ -56,7 +59,7 @@ public class Team {
     }
 
     public void respawnPlayer(Player p) {
-        ((CraftPlayer) p).getHandle().playerConnection.a(new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN));
-        p.teleport(spawnPoint);
+        p.setGameMode(GameMode.ADVENTURE);
+        p.teleport(this.spawnPoint);
     }
 }
