@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="OITC:jar">
+    <output-path>$USER_HOME$/Desktop/New folder/plugins</output-path>
+    <root id="archive" name="OITC.jar">
+      <element id="module-output" name="OITC" />
+      <element id="extracted-dir" path="D:/downloads/craftbukkit-1.8.8-R0.1-SNAPSHOT-latest.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
