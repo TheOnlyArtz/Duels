@@ -3,8 +3,12 @@ package me.theonlyartz.oitc.managers;
 import me.theonlyartz.oitc.Main;
 import me.theonlyartz.oitc.enums.State;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,17 +83,67 @@ public class GamesManager {
         return locations;
     }
 
-    public Player lookUpPlayer(String name) {
+    public GameInstanceManager lookUpPlayer(String name) {
         for (GameInstanceManager game : runningGames) {
             for (Player p : game.teamA.getPlayers()) {
-                if (p.getName().equals(name)) return p;
+                if (p.getName().equals(name)) return game;
             }
 
             for (Player p : game.teamB.getPlayers()) {
-                if (p.getName().equals(name)) return p;
+                if (p.getName().equals(name)) return game;
             }
         }
 
         return null;
+    }
+
+    public void applyOITCKit(Player p) {
+        p.getInventory().clear();
+        ItemStack helmet = new ItemStack(Material.LEATHER_HELMET, 1);
+        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) helmet.getItemMeta();
+
+        ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+        LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+
+        ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+        LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
+
+        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
+        LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
+
+        if (lookUpPlayer(p.getName()).getPlayerTeam(p).key.equals("A")) {
+            helmetMeta.setColor(Color.fromRGB(0, 255, 0));
+            helmet.setItemMeta(helmetMeta);
+
+            chestplateMeta.setColor(Color.fromRGB(0, 255, 0));
+            chestplate.setItemMeta(chestplateMeta);
+
+            leggingsMeta.setColor(Color.fromRGB(0, 255, 0));
+            leggings.setItemMeta(leggingsMeta);
+
+            bootsMeta.setColor(Color.fromRGB(0, 255, 0));
+            boots.setItemMeta(bootsMeta);
+        } else {
+            helmetMeta.setColor(Color.fromRGB(0, 0, 255));
+            helmet.setItemMeta(helmetMeta);
+
+            chestplateMeta.setColor(Color.fromRGB(0, 0, 255));
+            chestplate.setItemMeta(chestplateMeta);
+
+            leggingsMeta.setColor(Color.fromRGB(0, 0, 255));
+            leggings.setItemMeta(leggingsMeta);
+
+            bootsMeta.setColor(Color.fromRGB(0, 0, 255));
+            boots.setItemMeta(bootsMeta);
+        }
+
+        p.getEquipment().setHelmet(helmet);
+        p.getEquipment().setChestplate(chestplate);
+        p.getEquipment().setLeggings(leggings);
+        p.getEquipment().setBoots(boots);
+
+        p.getInventory().addItem(new ItemStack(Material.WOOD_SWORD, 1));
+        p.getInventory().addItem(new ItemStack(Material.BOW, 1));
+        p.getInventory().addItem(new ItemStack(Material.ARROW, 1));
     }
 }
