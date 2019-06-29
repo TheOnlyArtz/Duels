@@ -70,6 +70,7 @@ public class OitcCommand implements CommandExecutor {
             this.plugin.gamesManager.tryToStartGame(availableGame);
         } else if (availableGame.getState() == State.STARTED) {
             availableGame.getPlayerTeam(player).respawnPlayer(player);
+            plugin.gamesManager.applyOITCKit(player);
         }
 
         Main.sendMessage(player, "&A&OYou've joined the game successfully");
