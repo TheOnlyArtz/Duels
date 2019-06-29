@@ -1,6 +1,7 @@
 package me.theonlyartz.oitc.managers;
 
 import me.theonlyartz.oitc.Main;
+import me.theonlyartz.oitc.enums.State;
 import me.theonlyartz.oitc.models.Team;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -9,28 +10,38 @@ public class GameInstanceManager {
     public Team teamA;
     public Team teamB;
     private Main plugin;
+    public State state;
 
     public GameInstanceManager(Main p) {
-        teamA = new Team(p);
-        teamB = new Team(p);
+        this.teamA = new Team(p);
+        this.teamB = new Team(p);
         this.plugin = p;
+        this.state = State.WAITING;
     }
 
     /*
      * This method will just add the player to a desired team
      */
     public void addPlayer(Player p) {
+
         this.computePlayerTeam().addPlayer(p);
     }
 
+    public State getState() {
+        return this.state;
+    }
     /*
      * This method will compute what team each player should go.
      */
     private Team computePlayerTeam() {
-        int teamAsize = this.teamA.getPlayers().size();
-        int teamBsize = this.teamB.getPlayers().size();
+        try {
+            int teamAsize = this.teamA.getPlayers().size();
+            int teamBsize = this.teamB.getPlayers().size();
 
-        if (teamAsize > teamBsize) return this.teamB;
+            if (teamAsize > teamBsize) return this.teamB;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return teamA;
     }
@@ -45,5 +56,9 @@ public class GameInstanceManager {
         }
 
         return null;
+    }
+
+    public boolean isReady() {
+        return (teamA.getPlayers().size() + teamB.getPlayers().size()) >= 2;
     }
 }
